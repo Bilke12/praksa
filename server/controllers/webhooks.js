@@ -1,57 +1,67 @@
 import { Webhook } from "svix";
-import User from "../models/User.js"
+import User from "../models/User.js";
 
-//Api kontroler fukcija za clerk usere
-export const clerkWebhooks = async(req,res)=>{
-    try {  
+export const clerkWebhooks = async (req, res) => {
+    try {
+        console.log("🔗 Webhook received:", req.body);
 
-        // Svix istanca sa clerk webhook secret
-        const whook=new Webhook(process.env.CLERK_WEBHOOK_SECRET)
+        // ⚡ Odmah odgovori Clerk API-ju kako bi izbjegao timeout
+        res.status(200).json({ success: true, message: "Webhook received" });
 
-        //Potvrda headera
-        await whook.verify(JSON.stringify(req.body),{
-            "svix-id": req.headers["svix.id"],
-            "svix-timestamp" : req.headers["svix-timestamp"],
-            "svix-signature" : req.headers["svix-signature"]
-        })
-
-        // Dobivanje podataka od request body-a 
-        const {data, type} = req.body
-        //Switch case 
-        switch (type) {
-            case 'user.created':{
-                const userData = {
-                    _id:data.id,
-                    email: data.email_addresses[0].email_address,
-                    name : data.first_name + " " + data.last_name,
-                    image: data.image_url
-                }
-                await User.create(userData)
-                res.json({})
-                break;
-            }
-            case 'user.updated':{
-                const userData = {
-                    email: data.email_addresses[0].email_address,
-                    name : data.first_name + " " + data.last_name,
-                    image: data.image_url,
-                }
-                await User.findByIdAndUpdate(data.id, userData)
-                res.json({})
-                break;
-            }
-            case 'user.deleted':{
-                await User.findByIdAndDelete(data.id)
-                res.json({})
-                break;
-            }
-                
-            default:
-                break;
+        // Provjeri da li su svi potrebni headeri prisutni
+        if (!req.headers["svix-id"] || !req.headers["svix-timestamp"] || !req.headers["svix-signature"]) {
+            console.log("❌ Missing Svix headers");
+            return;
         }
-        
+
+        // Svix instanca sa Clerk webhook secret
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+
+        // Verifikacija Clerk Webhook-a
+        try {
+            whook.verify(JSON.stringify(req.body), {
+                "svix-id": req.headers["svix-id"],
+                "svix-timestamp": req.headers["svix-timestamp"],
+                "svix-signature": req.headers["svix-signature"]
+            });
+        } catch (error) {
+            console.log("❌ Webhook verification failed:", error.message);
+            return;
+        }
+
+        // Dobivanje podataka iz requesta
+        const { data, type } = req.body;
+        console.log(`📩 Event type: ${type}`, data);
+
+        switch (type) {
+            case "user.created":
+                await User.create({
+                    _id: data.id,
+                    email: data.email_addresses[0].email_address,
+                    name: `${data.first_name} ${data.last_name}`,
+                    image: data.image_url
+                });
+                console.log("👤 User created:", data.id);
+                break;
+
+            case "user.updated":
+                await User.findByIdAndUpdate(data.id, {
+                    email: data.email_addresses[0].email_address,
+                    name: `${data.first_name} ${data.last_name}`,
+                    image: data.image_url
+                });
+                console.log("🔄 User updated:", data.id);
+                break;
+
+            case "user.deleted":
+                await User.findByIdAndDelete(data.id);
+                console.log("🗑️ User deleted:", data.id);
+                break;
+
+            default:
+                console.log("⚠️ Unknown event type:", type);
+        }
     } catch (error) {
-        console.log(error.message)
-        res.json({success:false, message:'Webhooks Error'})
+        console.error("🚨 Webhook error:", error.message);
     }
-}
+};
