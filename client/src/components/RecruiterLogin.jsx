@@ -3,22 +3,66 @@ import { assets } from '../assets/assets'
 import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
 import { useEffect } from 'react'
+import axios from 'axios'
+import {useNavigate} from 'react-router-dom'
+import {toast} from 'react-toastify'
 
 function RecruiterLogin() {
+
+    const navigate = useNavigate()
+
     const [state, setState] = useState('Prijava')
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
     const [image, setImage] = useState(false)
     const [isTextDataSubmited, setIsTextDataSubmited] = useState(false)
-    const {setShowRecruiterLogin}= useContext(AppContext)
-    const onSubmitHandler = async(e) => {
-        e.preventDefault()
+    const {setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData}= useContext(AppContext)
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+    
+        if (state === "Registracija" && !isTextDataSubmited) {
+            return setIsTextDataSubmited(true);
+        }
+    
+        try {
+            if (state === "Prijava") { 
+                const { data } = await axios.post(backendUrl + '/api/company/login', { email, password });
+    
+                if (data.success) {
+                    setCompanyData(data.company)
+                    setCompanyToken(data.token)
+                    localStorage.setItem('companyToken', data.token)
+                    setShowRecruiterLogin(false)
+                    navigate('/dashboard')
+                }else{
+                    toast.error(data.message)
+                }
 
-        if(state == "Registracija" && !isTextDataSubmited) {
-            setIsTextDataSubmited(true)
+            } else {
+                const formData = new FormData()
+                formData.append('name', name)
+                formData.append('password', password)
+                formData.append('email', email)
+                formData.append('image', image)
+
+                const {data} = await axios.post(backendUrl+'/api/company/register', formData)
+
+                if (data.success) {
+                    setCompanyData(data.company)
+                    setCompanyToken(data.token)
+                    localStorage.setItem('companyToken', data.token)
+                    setShowRecruiterLogin(false)
+                    navigate('/dashboard')
+                } else{
+                    toast.error(data.message)
+                }
+            }
+        } catch (error) { 
+            toast.error(error.message)
         }
     }
+    
 
     useEffect(() =>{
         document.body.style.overflow = 'hidden'

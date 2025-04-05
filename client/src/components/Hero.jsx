@@ -12,13 +12,16 @@ function Hero() {
     const locationRef = useRef(null)
 
     const onSearch = () => {
-        setSearchFilter({
-            title:titleRef.current.value,
-            location: locationRef.current.value
-        })
-        setIsSearched(true)
-        
-    }
+      const title = titleRef.current.value;
+      const location = locationRef.current.value;
+  
+      setSearchFilter({
+          title,
+          location,
+          studij: []  
+      });
+      setIsSearched(true);
+  };
 
     return (
       <div className="w-full 2xl:px-20 mx-auto my-10">

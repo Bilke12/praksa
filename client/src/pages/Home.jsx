@@ -6,11 +6,12 @@ import Footer from '../components/Footer'
 
 function Home() {
   return (
-    <div>
-        <Navbar/>
+    <div className="flex flex-col min-h-screen">
+        <Navbar />
         <Hero />
         <PopisPraksa />
-        <Footer/>
+        <div className="flex-grow"></div>
+        <Footer />
     </div>
   )
 }

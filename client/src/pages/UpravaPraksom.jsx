@@ -1,12 +1,73 @@
-import React from 'react';
-import { manageJobsData } from '../assets/assets';
+import React, { useContext, useEffect } from 'react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import Loading from '../components/Loading';
 
 function UpravaPraksom() {
     const navigate = useNavigate();
 
-    return (
+    const [jobs, setJobs] = useState(false); 
+
+    const {backendUrl, companyToken} = useContext(AppContext)
+
+    //Funkcija za fetch poduzece 
+    const fetchCompanyJobs= async() => {
+
+        try {
+            const {data} = await axios.get(backendUrl+'/api/company/list-jobs',
+            {headers:{token:companyToken}}
+        )
+        
+        if (data.success) {
+            setJobs(data.jobsData.reverse())
+            console.log(data.jobsData)
+        } else{
+            toast.error(data.message)
+        }
+        
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+    }
+
+    //Funkcija za promjenu vidljivosti
+
+    const changeJobVisiblity = async(id) => {
+        try {
+
+            const{data} = await axios.post(backendUrl+ '/api/company/change-visibility',
+                {id}, 
+                {headers:{token: companyToken}}
+            )
+            
+            if (data.success) {
+                toast.success(data.message)
+                fetchCompanyJobs()
+            } else{
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    useEffect(()=>{
+        if (companyToken) {
+            fetchCompanyJobs()
+        }
+    },[companyToken])
+
+    return jobs ? jobs.length === 0 ? ( 
+    <div className='flex items-center justify-center h-[70vh]'>
+        <p className='text-xl sm:text-2xl'>Ne postoji nijedna objavljena praksa</p>
+    </div>
+    ) : (
         <div className='container mx-auto p-6'>
             <div className='overflow-x-auto'>
                 <table className='w-[90vw] max-w-[1400px] mx-auto bg-white border border-gray-200 shadow-lg rounded-lg'>
@@ -21,7 +82,7 @@ function UpravaPraksom() {
                         </tr>
                     </thead>
                     <tbody>
-                        {manageJobsData.map((job, index) => (
+                        {jobs.map((job, index) => (
                             <tr key={index} className='border-b hover:bg-gray-50'>
                                 <td className='py-4 px-6 text-center max-sm:hidden'>{index + 1}</td>
                                 <td className='py-4 px-6'>{job.title}</td>
@@ -29,7 +90,7 @@ function UpravaPraksom() {
                                 <td className='py-4 px-6 max-sm:hidden'>{job.location}</td>
                                 <td className='py-4 px-6 text-center'>{job.applicants}</td>
                                 <td className='py-4 px-6'>
-                                    <input className='scale-125 ml-4' type='checkbox' />
+                                    <input onChange={()=>changeJobVisiblity(job._id)} className='scale-125 ml-4' type='checkbox' checked={job.visible} />
                                 </td>
                             </tr>
                         ))}
@@ -45,7 +106,7 @@ function UpravaPraksom() {
                 </button>
             </div>
         </div>
-    );
+    ): <Loading />
 }
 
 export default UpravaPraksom;
