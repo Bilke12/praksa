@@ -7,7 +7,12 @@ const JobApplicationSchema = new mongoose.Schema({
     status:{type:String, default:'Pending'},
     selected: { type: Boolean, default: false },
     prioritet:{type:Number, required:true},
-    date: {type:Number, required:true}
+    date: {type:Number, required:true},
+    predaniDokumenti: { type: Boolean, default: false },
+    praksaUspjesnoObavljena: { type: Boolean, default: false },
+    adminComment: { type: String, default: "" },
+    dokumentacijaKompletna: { type: Boolean, default: false },
+    sporazumPredan: { type: Boolean, default: false },
 })
 
 const JobApplication = mongoose.model('JobApplication', JobApplicationSchema)

@@ -60,7 +60,10 @@ function Prijave() {
                 </tr>
               </thead>
               <tbody>
-                {userApplications.map((job, index) => (
+              {userApplications
+              .filter(job => job.jobId && job.companyId) // samo oni koji imaju podatke
+              .map((job, index) => (
+
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="py-3 px-4 flex items-center gap-2 border-b">
                       <img className="w-8 h-8" src={job.companyId.image} alt="" />

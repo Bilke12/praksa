@@ -10,6 +10,7 @@ function Navbar() {
     const { user } = useUser();
     const navigate = useNavigate();
     const { setShowRecruiterLogin } = useContext(AppContext);
+    const { userData } = useContext(AppContext);
 
     return (
         <div className="shadow py-4 w-full bg-white">
@@ -23,10 +24,14 @@ function Navbar() {
                     {user ? (
                         <div className="flex items-center gap-4">
                             {/* Podnesene prijave */}
-                            <Link to={'/prijave'} className="text-gray-600 hover:text-blue-600 text-sm sm:text-base">
+                            {user && userData?.role !== 'admin' && (
+                            <>
+                                <Link to={'/prijave'} className="text-gray-600 hover:text-blue-600 text-sm sm:text-base">
                                 Podnesene prijave
-                            </Link>
-                            <span className="hidden sm:block">|</span>
+                                </Link>
+                                <span className="hidden sm:block">|</span>
+                            </>
+                            )}
                             {/* Prikaz imena samo na većim ekranima */}
                             <p className="hidden sm:block text-gray-600">
                                 Pozdrav, {user.firstName + " " + user.lastName}

@@ -30,7 +30,7 @@ function PraksaCard({ job }) {
             </div>
             <div className='flex items-center gap-3 mt-3 text-sm'>
                 <span className='bg-gray-200 text-gray-600 px-4 py-1.5 rounded-full'>{job.location}</span>
-                {/* Ovdje dodajemo studij sa odgovarajućom bojom */}
+                {/* studij sa odgovarajućom bojom */}
                 <span className={`px-4 py-1.5 rounded-full ${getStudyBadgeColor(job.studij)}`}>
                     {job.studij}
                 </span>

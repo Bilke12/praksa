@@ -1,1 +1,25 @@
-node_modules
+# === Root level ===
+.DS_Store
+*.log
+.env
+.env.*.local
+.vscode/
+.idea/
+
+# === Node/Express backend ===
+server/node_modules/
+server/tmp/
+server/uploads/
+server/dist/
+server/pids
+server/*.pid
+server/*.seed
+server/*.pid.lock
+
+# === React frontend ===
+client/node_modules/
+client/build/
+client/dist/
+client/.env
+client/.env.*.local
+client/.DS_Store

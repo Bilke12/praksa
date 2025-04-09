@@ -10,6 +10,14 @@ import connectCloudinary from './config/cloudinary.js'
 import jobRoutes from './routes/jobRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import {clerkMiddleware} from '@clerk/express'
+import adminRoutes from './routes/adminRoutes.js'
+import adminJobRoutes from './routes/adminJobRoutes.js'
+import documentRoutes from "./routes/documentRoutes.js"
+import adminApplicationRoutes from './routes/adminApplicationRoutes.js'
+import adminDocumentsRoutes from "./routes/adminDocumentsRoutes.js"
+import adminJobsRoutes from './routes/adminJobRoutes.js';
+
+
 
 //Inicijalizacija Expressa
 const app= express()
@@ -32,11 +40,19 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   app.use('/api/company', companyRoutes)
   app.use('/api/jobs', jobRoutes)
   app.use('/api/users', userRoutes)
+  app.use('/api/admin', adminRoutes)
+  app.use('/api/admin', adminJobRoutes)
+  app.use("/api/documents", documentRoutes)
+  app.use('/api/admin', adminApplicationRoutes)
+  app.use("/api/admin", adminDocumentsRoutes)
+  app.use('/api/admin', adminJobsRoutes)
 
 //Port
 const PORT= process.env.PORT || 5000
 
 Sentry.setupExpressErrorHandler(app);
+
+
  
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)

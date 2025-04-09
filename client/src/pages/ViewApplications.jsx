@@ -89,18 +89,43 @@ function ViewApplications() {
                 <td className='py-4 px-6 hidden sm:table-cell'>{applicant.jobId.location}</td>
                 <td className='py-4 px-6 text-center font-semibold text-gray-500'>{applicant.prioritet}</td>
                 <td className='py-4 px-6 relative'>
-                  {applicant.status === "Pending"
-                  ? <div className='relative inline-block text-left group'>
-                  <button className='text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded'>...</button>
-                  <div className='z-10 hidden absolute right-0 md:left-0 top-0 mt-2 w-36 bg-white border border-gray-200 rounded shadow-md group-hover:block'>
-                    <button onClick={()=>changeJobApplicationStatus(applicant._id, 'Prihvaceno')} className='block w-full text-left px-4 py-2 text-green-600 hover:bg-gray-100 rounded-t'>Prihvati</button>
-                    <button onClick={()=>changeJobApplicationStatus(applicant._id, 'Odbijeno')} className='block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded-b'>Odbij</button>
-                  </div>
-                </div>
-                : <div>{applicant.status}</div>
-                  }
-                  
-                </td>
+  {applicant.status === 'Pending' && (
+    <div className='relative inline-block text-left group'>
+      <button className='text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded'>...</button>
+      <div className='z-10 hidden absolute right-0 md:left-0 top-0 mt-2 w-36 bg-white border border-gray-200 rounded shadow-md group-hover:block'>
+        <button
+          onClick={() => changeJobApplicationStatus(applicant._id, 'Prihvaceno')}
+          className='block w-full text-left px-4 py-2 text-green-600 hover:bg-gray-100 rounded-t'>
+          Prihvati
+        </button>
+        <button
+          onClick={() => changeJobApplicationStatus(applicant._id, 'Odbijeno')}
+          className='block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded-b'>
+          Odbij
+        </button>
+      </div>
+    </div>
+  )}
+
+  {applicant.status !== 'Pending' && (
+    <>
+      {applicant.status === 'Prihvaceno' && applicant.selected ? (
+        <div className="mt-1 flex items-center gap-1 px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded w-fit">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          Student odabrao ovu praksu
+        </div>
+      ) : (
+        <div className={`text-sm font-medium ${applicant.status === 'Prihvaceno' ? 'text-green-600' : 'text-red-600'}`}>
+          {applicant.status === 'Prihvaceno' ? 'Prihvaćeno' : 'Odbijeno'}
+        </div>
+      )}
+    </>
+  )}
+</td>
+
+
               </tr>
             ))}
           </tbody>

@@ -85,4 +85,38 @@ export const getUserJobApplications = async (req,res) => {
 
 }
 
+//Odabir izbora prakse
+
+export const selectInternship = async (req, res) => {
+    const { applicationId } = req.body;
+    const userId = req.auth?.userId;
+  
+    console.log("🟡 selectInternship triggered");
+    console.log("applicationId:", applicationId);
+    console.log("userId:", userId);
+  
+    try {
+      const selectedApp = await JobApplication.findOne({ _id: applicationId, userId });
+  
+      if (!selectedApp || selectedApp.status !== 'Prihvaceno') {
+        return res.json({ success: false, message: 'Nevažeća prijava za odabir.' });
+      }
+  
+      await JobApplication.updateMany(
+        { userId, _id: { $ne: applicationId } },
+        { $set: { selected: false } }
+      );
+  
+      selectedApp.selected = true;
+      await selectedApp.save();
+  
+      console.log("✅ Praksa uspješno označena kao odabrana");
+      res.json({ success: true, message: 'Praksa je uspješno prihvaćena!' });
+    } catch (error) {
+      console.log(" GRESKA:", error.message);
+      res.json({ success: false, message: error.message });
+    }
+  };
+  
+
 //Update korisnikovu dokumentaciju ? 

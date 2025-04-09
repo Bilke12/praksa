@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import { assets } from '../assets/assets';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
+import UploadDokument from './UploadDokument';
 
 function Dokumenti() {
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -42,7 +43,7 @@ function Dokumenti() {
                 </div>
 
                 {/* Glavni sadržaj */}
-                <div className="flex-grow bg-gray-100 shadow-md p-6 rounded-lg  max-w-8xl">
+                <div className="flex-grow bg-gray-100 shadow-md p-7 rounded-lg max-w-8xl">
                     <h1 className="text-2xl font-semibold mb-6">Opći dio</h1>
                     <div className="space-y-4 text-gray-600">
                         <p>Studenti koji ne povezuju praksu i diplomski dužni su:</p>
@@ -76,19 +77,17 @@ function Dokumenti() {
                     </div>
                     
                     <h2 className="text-xl font-semibold mt-10 mb-4">Predajte vaše dokumente</h2>
-                    <div className='w-full max-w-lg p-4 border border-gray-300 rounded bg-gray-50'>
-                        <h2 className='text-lg font-medium text-gray-700 mb-3'>Dodajte dokumente</h2>
-                        <div className='flex items-center gap-3'>
-                            <label className='cursor-pointer' htmlFor="fileUpload">
-                                <img className='w-10 h-10 opacity-70 hover:opacity-100 transition' src={assets.profile_upload_icon} alt="Upload" />
-                                <input id='fileUpload' onChange={handleFileUpload} accept='application/pdf' type="file" multiple hidden />
-                            </label>
-                            <div className='text-gray-600 text-sm'>
-                                {uploadedFiles.length > 0 ? uploadedFiles.map((file, index) => (
-                                    <p key={index}>{file.name}</p>
-                                )) : "Odaberite datoteke"}
-                            </div>
-                        </div>
+                    <h2 className="text-xl font-semibold mt-10 mb-4">Predajte vaše dokumente</h2>
+
+                    <div className="w-full max-w-2xl p-6 border border-gray-300 rounded bg-gray-50 space-y-5">
+                    <h2 className="text-lg font-medium text-gray-700">Dodajte dokumente</h2>
+
+                    <UploadDokument type="sporazum" label="Sporazum o stručnoj praksi" />
+                    <UploadDokument type="opz" label="Obrazac projektnog zadatka" />
+                    <UploadDokument type="izvjesce" label="Izvješće o studentskoj praksi" />
+                    <UploadDokument type="zavrsno" label="Završno izvješće" />
+                    <UploadDokument type="poster" label="Poster" />
+                    <UploadDokument type="prezentacija" label="Prezentacija" />
                     </div>
                 </div>
             </div>

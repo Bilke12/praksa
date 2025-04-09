@@ -7,8 +7,8 @@ const jobSchema = new mongoose.Schema({
     location: { type: String, required: true },
     studij: { type: String, required: true },
     brojstudenata: { type: Number, required: true },
-    date: { type: Number, required: true },
-    visible: { type: Boolean, default: true },
+    date: { type: Number, required: false },
+    visible: { type: Boolean, default: false },
     companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
     OPZFileUrl: { type: String } 
 });

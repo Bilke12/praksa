@@ -13,12 +13,30 @@ import UpravaPraksom from './pages/UpravaPraksom'
 import ViewApplications from './pages/ViewApplications'
 import 'quill/dist/quill.snow.css'
 import Dokumenti from './components/Dokumenti'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import AdminDashboard from "./pages/AdminDashboard"
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import AdminPendingJobs from './components/AdminPendingJobs'
+
+
 
 const App = () => {
 
   const{showRecruiterLogin, companyToken}= useContext(AppContext)
+  const { userData } = useContext(AppContext)
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (userData?.role === 'admin' && location.pathname === '/') {
+      navigate('/admin');
+    }
+  }, [userData, location, navigate]);
+  
+
+
 
   return (
     <div>
@@ -30,6 +48,12 @@ const App = () => {
         <Route path='/prijave' element={<Prijave />} />
         <Route path='/mojaPraksa' element={<MojaPraksa />} />
         <Route path='/dokumenti' element={<Dokumenti />} />
+        {userData?.role === 'admin' && (
+          <>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/prakse" element={<AdminPendingJobs />} />
+          </>
+        )}
         <Route path='/dashboard' element={<Dashboard/>}>
         {
           companyToken ? <> 

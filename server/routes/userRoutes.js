@@ -1,5 +1,5 @@
 import express from 'express'
-import { applyForJob, getUserData, getUserJobApplications } from '../controllers/userController.js'
+import { applyForJob, getUserData, getUserJobApplications, selectInternship } from '../controllers/userController.js'
 
 const router = express.Router()
 
@@ -12,6 +12,12 @@ router.post('/apply', applyForJob)
 //Get applied praksa data
 router.get('/applications', getUserJobApplications)
 
+//Ruta za odabir prakse
+
+router.post('/select-internship', selectInternship)
+
+
 //Dokumentacija nadam se 
+
 
 export default router
